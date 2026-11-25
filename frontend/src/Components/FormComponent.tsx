@@ -1,11 +1,11 @@
 import type { FormComponentProps } from "./ThriftHappensApp";
-import {type Fit, ClothingCategory, type ClothingSize} from "../data/data";
+import type {Fit, ClothingCategory, ClothingSize} from "../data/data";
 
 const fit: Fit[] = ["men", "women", "kids"];
 const clothingCategory: ClothingCategory[] = [
     "hoodie",
     "pants",
-    "shift",
+    "shirt",
     "shorts",
     "t-shirt",
 ];
@@ -64,6 +64,57 @@ export default function FormComponent({
                     </option>
                 ))}
             </select>
+            <label htmlFor="color">Colour</label>
+            <input type="text"
+            name="color"
+            id="color"
+            value={clothesArtitcle.color}
+            onChange={handleOnChange}
+            />
+            <br />
+            <label htmlFor="description">Description:</label>
+            <textarea 
+            name="description"
+            id="description"
+            value={clothesArtitcle.description}
+            onChange={handleOnChange}
+            ></textarea>
+            <br />
+            <label htmlFor="size">Size: </label>
+            <select
+            name="size"
+            id="size"
+            value={clothesArtitcle.size}
+            onChange={handleOnChange}
+            >
+                {clothingSize.map((size) => (
+                    <option key={size} value={size}>
+                        {size}
+                    </option>
+                ))}
+            </select>
+            <br />
+            <label htmlFor="price">Price: </label>
+            <input
+            type="number"
+            name="price"
+            id="price"
+            value={clothesArtitcle.price}
+            onChange={handleOnChange}
+            min="0"
+            step="0.5"
+            />
+            <br />
+            <label htmlFor="quantity">Quantity: </label>
+            <input
+            type="number"
+            name="quantity"
+            id="quantity"
+            value={clothesArtitcle.quantity}
+            onChange={handleOnChange}
+            min={0}
+            />
+            <button
         </form>
     </div>
 }

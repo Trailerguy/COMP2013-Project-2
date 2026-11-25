@@ -61,8 +61,9 @@ export default function ThriftHappensApp() {
   const [products, setProducts] = useState<ClothingProduct[]>([]);
   const [itemsQuantity, setItemsQuantity] = useState<ItemsQuantity[]>([]);
   const [checkoutItems, setCheckoutItems] = useState<CheckoutItem[]>([]);
+  const [responseMessage, setResponseMesage] = useState
   const [clothesArticle, setClothesArticle] = useState<ClothingProduct>({
-    id: 0,
+    id: -1,
     name: "",
     image: "",
     fit: "men",
@@ -79,7 +80,7 @@ export default function ThriftHappensApp() {
 async function getProductsFromDB() {
   try {
     const {data} = await axios.get("http://localhost:3000/data");
-    setProducts(data);
+    setProducts(data.sort((a:ClothingProduct, b:ClothingProduct) => b.id - a.id));
     setItemsQuantity(data.map((product: ClothingProduct) => ({
       id: product.id,
       userQuantity: 0,
@@ -95,7 +96,7 @@ useEffect (() => {
 async function getProductsFromDB() {
   try {
     const {data} = await axios.get("http://localhost:3000/data");
-    setProducts(data);
+    setProducts(data.sort((a:ClothingProduct, b:ClothingProduct) => b.id - a.id));
     setItemsQuantity(data.map((product: ClothingProduct) => ({
       id: product.id,
       userQuantity: 0,
@@ -125,7 +126,7 @@ getProductsFromDB();
                   : prev.userQuantity,
                 0,
               ),
-              remainQuantit: Math.max(
+              remainQuantity: Math.max(
                 prev.remainQuantity - delta <= remainQuantity
                   ? prev.remainQuantity - delta
                   : prev.remainQuantity,
@@ -213,9 +214,30 @@ getProductsFromDB();
     }));
   }
 
-  function handleOnSubmit(e: SubmitEvent<HTMLFormElement>) {
+  async function handleOnSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    return;
+    if(clothesArticle.id === -1){
+      try{
+        await axios.post("http://localhost:3000/data", {...clothesArticle, id: parseInt((Math.random() * 10000 + 50).toFixed(0)),
+
+        }).then((response) => setResponseMessage(response.data.message));
+        await getProductsFromDB();
+        setClothesArticle({
+          id: -1,
+          name: "",
+          image: "",
+          fit: "men",
+          category: "hoodie",
+          size: "M",
+          color: "",
+          description: "",
+          price: 0,
+          quantity: 0,
+          itemQuantity: 0,
+        });
+      } catch(error) {
+        console.log(error);
+    }
   }
 
   return (
@@ -236,6 +258,7 @@ getProductsFromDB();
         />
         <FormComponent
         clothesArticle={clothesArticle}
+        responseMessage={responseMessage}
         handleOnSublit={handleOnSubmit}
         handleOnChange={handleOnChange}
         />

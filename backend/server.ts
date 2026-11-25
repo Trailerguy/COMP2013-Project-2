@@ -1,6 +1,6 @@
 //backend server for thrift happens online shop
 //imports
-import express, {type Express} from "express";
+import express, {response, type Express} from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import "dotenv/config";
@@ -42,3 +42,42 @@ server.get("/data", async (request, response) => {
         response.status(500).send(error);
     }
 });
+
+//POST route to add a clothing items to database
+server.post("/data", async (request, response) =>{
+    const {
+        id,
+        name,
+        image,
+        fit,
+        category,
+        size,
+        color,
+        description,
+        price,
+        quantity,
+        itemQuantity}
+        = request.body;
+    const newArticle = new ClothesItem({
+        id,
+        name,
+        image,
+        fit,
+        category,
+        size,
+        color,
+        description,
+        price,
+        quantity,
+        itemQuantity,
+    });
+    try{
+        await newArticle.save();
+        response.status(201).send({message: `The new item with id ${id} has been added successfully`,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        response.status(500).send(error);
+    }
+})
