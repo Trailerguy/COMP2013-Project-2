@@ -27,6 +27,8 @@ export interface ItemsContainerProps {
     userQuantity: number,
     price: number,
   ) => void;
+  handleDeleteItem: (id: number) => void;
+  handleEditItem: (id: number) => void;
 }
 
 export interface ItemsQuantity {
@@ -53,6 +55,7 @@ export interface CheckoutContainerProps {
 
 export interface FormComponentProps {
   clothesArticle: ClothingProduct;
+  responseMessage: string;
   handleOnSubmit: (e: SubmitEvent<HTMLFormElement>) => void;
   handleOnChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
 }
@@ -61,7 +64,7 @@ export default function ThriftHappensApp() {
   const [products, setProducts] = useState<ClothingProduct[]>([]);
   const [itemsQuantity, setItemsQuantity] = useState<ItemsQuantity[]>([]);
   const [checkoutItems, setCheckoutItems] = useState<CheckoutItem[]>([]);
-  const [responseMessage, setResponseMesage] = useState
+  const [responseMessage, setResponseMessage] = useState<string>("");
   const [clothesArticle, setClothesArticle] = useState<ClothingProduct>({
     id: -1,
     name: "",
@@ -75,7 +78,7 @@ export default function ThriftHappensApp() {
     quantity: 0,
     itemQuantity: 0,
   });
-}
+
 
 async function getProductsFromDB() {
   try {
@@ -239,7 +242,47 @@ getProductsFromDB();
         console.log(error);
     }
   }
+    else {
+    try {
+      await axios.patch(`http://localhost:3000/data/${clothesArticle.id}`, clothesArticle,)
+      .then((response) => setResponseMessage(response.data.message))
+      .then(() => getProductsFromDB());
+      setClothesArticle({
+          id: -1,
+          name: "",
+          image: "",
+          fit: "men",
+          category: "hoodie",
+          size: "M",
+          color: "",
+          description: "",
+          price: 0,
+          quantity: 0,
+          itemQuantity: 0,
+        });
+    } catch (error){
+      console.log(error);
+    }
+  }
+}
 
+  async function handleDeleteItem(id: number) {
+    try{
+      await axios.delete(`http://localhost:3000/data/${id}`).then((response) =>
+      setResponseMessage(response.data.message)).then(() => getProductsFromDB());
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function handleEditItem(id: number) {
+    const itemToEdit: ClothingProduct = products.find((item) => item.id === id,
+  ) || {...clothesArticle};
+    if(!itemToEdit) {
+      throw new Error(`Product with id ${id} cannot be found`);
+    }
+    setClothesArticle({...itemToEdit});
+  }
   return (
     <div>
       <NavBar />
@@ -249,6 +292,8 @@ getProductsFromDB();
           itemsQuantity={itemsQuantity}
           handleAdjustQuantityCounter={handleAdjustQuantityCounter}
           handleAddToCheckout={handleAddToCheckout}
+          handleDeleteItem={handleDeleteItem}
+          handleEditItem={handleEditItem}
         />
         <CheckoutContainer
           checkoutItems={checkoutItems}
@@ -259,7 +304,7 @@ getProductsFromDB();
         <FormComponent
         clothesArticle={clothesArticle}
         responseMessage={responseMessage}
-        handleOnSublit={handleOnSubmit}
+        handleOnSubmit={handleOnSubmit}
         handleOnChange={handleOnChange}
         />
       </div>

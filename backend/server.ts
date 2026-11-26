@@ -80,4 +80,29 @@ server.post("/data", async (request, response) =>{
         console.log(error);
         response.status(500).send(error);
     }
+});
+
+//DELETE route to delete clothes by id
+server.delete("/data/:id", async (request, response) => {
+    const id = Number(request.params.id); //must reconvert back to number due to arriving as string
+    try{
+        await ClothesItem.findOneAndDelete({ id });
+        response.status(201).send({message: `Item with id ${id} has been successfully deleted`});
+    } catch(error){
+        console.log(error);
+        response.status(500).send(error);
+    }
+});
+
+//PATCH route to edit one clothes article by id
+server.patch("data/:id", async (request, response) => {
+    const id = Number(request.params.id);
+    const clothesArticle = request.body;
+    try{
+        await ClothesItem.findOneAndUpdate({id}, {...clothesArticle});
+        response.status(201).send({message: `Item with id ${id} has been successfully updated`});
+    } catch (error) {
+        console.log(error);
+        response.status(500).send(error);
+    }
 })

@@ -12,7 +12,8 @@ const clothingCategory: ClothingCategory[] = [
 const clothingSize: ClothingSize[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
 export default function FormComponent({
-    clothesArtitcle,
+    clothesArticle,
+    responseMessage,
     handleOnSubmit,
     handleOnChange,
 }: FormComponentProps) {
@@ -23,7 +24,7 @@ export default function FormComponent({
             type="text"
             name="name"
             id="name"
-            value={clothesArtitcle.name}
+            value={clothesArticle.name}
             onChange={handleOnChange}
             />
             <br />
@@ -32,7 +33,7 @@ export default function FormComponent({
             type="text"
             name="image"
             id="image"
-            value={clothesArtitcle.image}
+            value={clothesArticle.image}
             onChange={handleOnChange}
             />
             <br />
@@ -40,7 +41,7 @@ export default function FormComponent({
             <select
             name="fit"
             id="fit"
-            value={clothesArtitcle.fit}
+            value={clothesArticle.fit}
             onChange={handleOnChange}
             >
                 {fit.map((fit) => (<option
@@ -54,10 +55,10 @@ export default function FormComponent({
             <select
             name="category"
             id="category"
-            value={clothesArtitcle.category}
+            value={clothesArticle.category}
             onChange={handleOnChange}
             >
-                {ClothingCategory.map((category) => (
+                {clothingCategory.map((category) => (
                     <option key={category}
                     value={category}
                     >{category}
@@ -68,7 +69,7 @@ export default function FormComponent({
             <input type="text"
             name="color"
             id="color"
-            value={clothesArtitcle.color}
+            value={clothesArticle.color}
             onChange={handleOnChange}
             />
             <br />
@@ -76,7 +77,7 @@ export default function FormComponent({
             <textarea 
             name="description"
             id="description"
-            value={clothesArtitcle.description}
+            value={clothesArticle.description}
             onChange={handleOnChange}
             ></textarea>
             <br />
@@ -84,7 +85,7 @@ export default function FormComponent({
             <select
             name="size"
             id="size"
-            value={clothesArtitcle.size}
+            value={clothesArticle.size}
             onChange={handleOnChange}
             >
                 {clothingSize.map((size) => (
@@ -99,7 +100,7 @@ export default function FormComponent({
             type="number"
             name="price"
             id="price"
-            value={clothesArtitcle.price}
+            value={clothesArticle.price}
             onChange={handleOnChange}
             min="0"
             step="0.5"
@@ -110,11 +111,12 @@ export default function FormComponent({
             type="number"
             name="quantity"
             id="quantity"
-            value={clothesArtitcle.quantity}
+            value={clothesArticle.quantity}
             onChange={handleOnChange}
             min={0}
             />
-            <button
+            <button>Submit</button>
         </form>
+        <p>{responseMessage}</p>
     </div>
-}
+};
