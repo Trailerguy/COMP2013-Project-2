@@ -221,7 +221,7 @@ getProductsFromDB();
     e.preventDefault();
     if(clothesArticle.id === -1){
       try{
-        await axios.post("http://localhost:3000/data", {...clothesArticle, id: parseInt((Math.random() * 10000 + 50).toFixed(0)),
+        await axios.post(`http://localhost:3000/data`, {...clothesArticle, id: parseInt((Math.random() * 10000 + 50).toFixed(0)),
 
         }).then((response) => setResponseMessage(response.data.message));
         await getProductsFromDB();
